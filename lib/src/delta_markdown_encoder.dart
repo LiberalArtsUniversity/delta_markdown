@@ -42,7 +42,8 @@ class DeltaMarkdownEncoder extends Converter<String, String> {
           _handleLine(operationData, operation.attributes);
         }
       } else if (operation.data is Map<String, dynamic>) {
-        _handleEmbed(operation.data as Map<String, dynamic>);
+        _handleEmbed(operation.data as Map<String, dynamic>,
+            operation.attributes as Map<String, dynamic>);
       } else {
         throw ArgumentError('Unexpected formatting of the input delta string.');
       }
@@ -150,15 +151,18 @@ class DeltaMarkdownEncoder extends Converter<String, String> {
     }
   }
 
-  void _handleEmbed(Map<String, dynamic> data) {
+  void _handleEmbed(Map<String, dynamic> data, Map<String, dynamic> attribute) {
     final embed = BlockEmbed(data.keys.first, data.values.first as String);
 
+    print(embed.type);
     if (embed.type == 'image') {
       _writeEmbedTag(lineBuffer, embed);
       _writeEmbedTag(lineBuffer, embed, close: true);
     } else if (embed.type == 'divider') {
       _writeEmbedTag(lineBuffer, embed);
       _writeEmbedTag(lineBuffer, embed, close: true);
+    } else if (embed.type == 'reply' || embed.type == 'to') {
+      _writeCustomEmbedTag(lineBuffer, embed, attribute);
     }
   }
 
@@ -265,6 +269,20 @@ class DeltaMarkdownEncoder extends Converter<String, String> {
       }
     } else if (embed.type == kDividerType && close) {
       buffer.write('\n---\n\n');
+    }
+  }
+
+  void _writeCustomEmbedTag(
+    StringBuffer buffer,
+    BlockEmbed embed,
+    Map<String, dynamic> attributes,
+  ) {
+    if (embed.type == 'reply') {
+      buffer.write(
+          '[返信 muid=${embed.data} mid=${attributes['messageId']} uid=${attributes['uid']} icon=${attributes['iconUrl']} rank=${attributes['rank']} roomId=${attributes['roomId']}] ${attributes['userName']}\n');
+    } else if (embed.type == 'to') {
+      buffer.write(
+          '[TO uid=${embed.data} icon=${attributes['iconUrl']} rank=${attributes['rank']}] ${attributes['userName']}\n');
     }
   }
 }
