@@ -181,7 +181,8 @@ class DeltaMarkdownEncoder extends Converter<String, String> {
       markdownBuffer
         ..write(currentBlockLines.join('\n'))
         ..writeln();
-    } else if (blockStyle == Attribute.codeBlock) {
+    } else if (blockStyle == Attribute.codeBlock ||
+        blockStyle == Attribute.lcInfo) {
       _writeAttribute(markdownBuffer, blockStyle);
       markdownBuffer.write(currentBlockLines.join('\n'));
       _writeAttribute(markdownBuffer, blockStyle, close: true);
@@ -223,6 +224,8 @@ class DeltaMarkdownEncoder extends Converter<String, String> {
       buffer.write(!close ? '[' : '](${attribute.value})');
     } else if (attribute == Attribute.codeBlock) {
       buffer.write(!close ? '```\n' : '\n```');
+    } else if (attribute == Attribute.lcInfo) {
+      buffer.write(!close ? '[lc-info]' : '[/lc-info]');
     } else {
       throw ArgumentError('Cannot handle $attribute');
     }
@@ -236,6 +239,8 @@ class DeltaMarkdownEncoder extends Converter<String, String> {
     if (close) {
       return; // no close tag needed for simple blocks.
     }
+
+    print(block.value);
 
     if (block == Attribute.blockQuote) {
       buffer.write('> ');
