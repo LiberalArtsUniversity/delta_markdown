@@ -161,7 +161,7 @@ class DeltaMarkdownEncoder extends Converter<String, String> {
       _writeEmbedTag(lineBuffer, embed);
       _writeEmbedTag(lineBuffer, embed, close: true);
     } else if (embed.type == 'reply' ||
-        embed.type == 'to' ||
+        embed.type == 'to' || embed.type == 'to_all' ||
         embed.type == 'lc_blockquote') {
       _writeCustomEmbedTag(lineBuffer, embed, attribute);
     }
@@ -289,6 +289,9 @@ class DeltaMarkdownEncoder extends Converter<String, String> {
     } else if (embed.type == 'to') {
       buffer.write(
           '[TO uid=${embed.data} icon=${attributes?['iconUrl']} rank=${attributes?['rank']}] ${attributes?['userName']}\n');
+    } else if (embed.type == 'to_all') {
+      buffer.write(
+          '[TOALL]\n');
     } else if (embed.type == 'lc_blockquote') {
       buffer.write(
           '[lc_blockquote uid=${attributes?['uid']} icon=${attributes?['iconUrl']} rank=${attributes?['rank']} userName=${attributes?['userName']} datetime="${attributes?['datetime']}"]${embed.data}[/lc_blockquote]');
