@@ -285,16 +285,16 @@ class DeltaMarkdownEncoder extends Converter<String, String> {
   ) {
     if (embed.type == 'reply') {
       buffer.write(
-          '[返信 muid=${embed.data} mid=${attributes?['messageId']} uid=${attributes?['uid']} icon=${attributes?['iconUrl']} rank=${attributes?['rank']} roomId=${attributes?['roomId']}] ${attributes?['userName']}\n');
+          '[返信 muid=${embed.data} mid=${attributes?['messageId']} uid=${attributes?['uid']} icon=${attributes?['iconUrl']} rank=${attributes?['rank']} roomId=${attributes?['roomId']}] "${attributes?['userName']}"\n');
     } else if (embed.type == 'to') {
       buffer.write(
-          '[TO uid=${embed.data} icon=${attributes?['iconUrl']} rank=${attributes?['rank']}] ${attributes?['userName']}\n');
+          '[TO uid=${embed.data} icon=${attributes?['iconUrl']} rank=${attributes?['rank']}] "${attributes?['userName']}"\n');
     } else if (embed.type == 'to_all') {
       buffer.write(
           '[TOALL]\n');
     } else if (embed.type == 'lc_blockquote') {
       buffer.write(
-          '[lc_blockquote uid=${attributes?['uid']} icon=${attributes?['iconUrl']} rank=${attributes?['rank']} userName=${attributes?['userName']} datetime="${attributes?['datetime']}"]${embed.data}[/lc_blockquote]');
+          '[lc_blockquote uid=${attributes?['uid']} icon=${attributes?['iconUrl']} rank=${attributes?['rank']} userName="${attributes?['userName']}" datetime="${attributes?['datetime']}"]${embed.data}[/lc_blockquote]');
     }
   }
 }
