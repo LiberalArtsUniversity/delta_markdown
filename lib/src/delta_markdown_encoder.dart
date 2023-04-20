@@ -153,6 +153,7 @@ class DeltaMarkdownEncoder extends Converter<String, String> {
 
   void _handleEmbed(
       Map<String, dynamic> data, Map<String, dynamic>? attribute) {
+    print(data.values);
     final embed = BlockEmbed(data.keys.first, data.values.first as String);
     if (embed.type == 'image') {
       _writeEmbedTag(lineBuffer, embed);
@@ -161,7 +162,9 @@ class DeltaMarkdownEncoder extends Converter<String, String> {
       _writeEmbedTag(lineBuffer, embed);
       _writeEmbedTag(lineBuffer, embed, close: true);
     } else if (embed.type == 'reply' ||
-        embed.type == 'to' || embed.type == 'to_all' ||
+        embed.type == 'to' ||
+        embed.type == 'to_all' ||
+        embed.type == 'file' ||
         embed.type == 'lc_blockquote') {
       _writeCustomEmbedTag(lineBuffer, embed, attribute);
     }
@@ -290,11 +293,13 @@ class DeltaMarkdownEncoder extends Converter<String, String> {
       buffer.write(
           '[TO uid=${embed.data} icon=${attributes?['iconUrl']} rank=${attributes?['rank']}] "${attributes?['userName']}"\n');
     } else if (embed.type == 'to_all') {
-      buffer.write(
-          '[TOALL]\n');
+      buffer.write('[TOALL]\n');
     } else if (embed.type == 'lc_blockquote') {
       buffer.write(
           '[lc_blockquote uid=${attributes?['uid']} icon=${attributes?['iconUrl']} rank=${attributes?['rank']} userName="${attributes?['userName']}" datetime="${attributes?['datetime']}"]${embed.data}[/lc_blockquote]');
+    } else if (embed.type == 'file') {
+      buffer.write(
+          '[file url=${attributes?['url']} title=${attributes?['title']}]');
     }
   }
 }
