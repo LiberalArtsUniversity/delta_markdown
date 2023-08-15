@@ -229,8 +229,6 @@ class DeltaMarkdownEncoder extends Converter<String, String> {
       buffer.write(!close ? '```\n' : '\n```');
     } else if (attribute == Attribute.lcInfo) {
       buffer.write(!close ? '[lc-info]' : '[/lc-info]');
-    } else {
-      throw ArgumentError('Cannot handle $attribute');
     }
   }
 
